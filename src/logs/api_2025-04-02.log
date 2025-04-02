@@ -1,2 +1,3 @@
 {"level":"error","message":"Account year not found","method":"PUT","timestamp":"2025-04-02T15:25:18.707Z","url":"/api/accountYear/67ec0b0880210c6f31977c9c"}
 {"level":"error","message":"CustomerModel validation failed: CompanyName: Path `CompanyName` is required.","method":"POST","timestamp":"2025-04-02T15:56:24.959Z","url":"/api/customer"}
+{"level":"error","message":"ProjectModel validation failed: ProjectName: Path `ProjectName` is required.","method":"POST","timestamp":"2025-04-02T16:34:01.518Z","url":"/api/project"}
