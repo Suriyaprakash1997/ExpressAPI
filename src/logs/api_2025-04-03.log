@@ -1,0 +1,1 @@
+{"level":"error","message":"AccountYear validation failed: EndDate: Path `EndDate` is required., StartDate: Path `StartDate` is required., AccountYear: Path `AccountYear` is required.","method":"POST","timestamp":"2025-04-03T14:59:43.886Z","url":"/api/accountYear"}

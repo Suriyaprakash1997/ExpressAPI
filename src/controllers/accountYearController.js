@@ -34,6 +34,12 @@ exports.getPagination = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const newData = new AccountYear(req.body);
+        if (newData.StartDate) {
+            newData.StartDate = new Date(new Date(newData.StartDate).setUTCHours(0, 0, 0, 0));
+        }
+        if (newData.EndDate) {
+            newData.EndDate = new Date(new Date(newData.EndDate).setUTCHours(0, 0, 0, 0));
+        }
         const result= await newData.save();
         res.status(200).json({Status:result._id,Message:"Account year saved"});
     } catch (error) {
