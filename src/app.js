@@ -9,6 +9,7 @@ dotenv.config();
 const accountYearRoute=require('./routes/accountYearRoute')
 const customerRoute=require('./routes/customerRoute')
 const projectRoute=require('./routes/projectRoute')
+const dropdownRoute=require('./routes/dropdownRoute')
 const SECRET_KEY = process.env.JWT_SECRET || "mysecretkey";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,6 +46,8 @@ app.post("/login", (req, res) => {
 app.use('/api', accountYearRoute);
 app.use('/api', customerRoute);
 app.use('/api',projectRoute);
+app.use('/api',dropdownRoute);
+
 app.use(errorHandler);
 const PORT = 8082;
 app.listen(PORT, () => {
