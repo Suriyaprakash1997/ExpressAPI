@@ -33,6 +33,10 @@ exports.getPagination = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const newData = new Project(req.body);
+         const existingData = await Project.findOne({ ProjectName: newData.ProjectName, IsDelete: 0 });
+            if (existingData) {
+                return res.status(400).json({ Status:-1, Message: "Project name already exists" });
+            }
         const result= await newData.save();
         res.status(200).json({Status:result._id,Message:"Project details saved"});
     } catch (error) {
@@ -44,6 +48,10 @@ exports.update = async (req, res) => {
     try {
         const { id } = req.params;
         const updatedData = req.body;
+         const existingData = await Project.findOne({ ProjectName: updatedData.ProjectName, IsDelete: 0,_id:{$ne:id} });
+                if (existingData) {
+                    return res.status(400).json({ Status:-1, Message: "Project name already exists" });
+                }
         const result= await Project.findByIdAndUpdate(id, updatedData, {
             new: true,
             runValidators: true

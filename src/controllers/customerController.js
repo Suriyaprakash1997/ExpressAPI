@@ -5,7 +5,7 @@ exports.getPagination = async (req, res) => {
         page = parseInt(PageIndex) || 1;
         limit = parseInt(PageSize) || 10;
         const skip = (page - 1) * limit;
-        let query = {};
+        let query = {IsDelete:{$ne:1}};
         if (SearchString) {
             query.CompanyName = { $regex: SearchString, $options: 'i' }; 
             query.CustomerName = { $regex: SearchString, $options: 'i' };
@@ -35,6 +35,11 @@ exports.getPagination = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const newData = new Customer(req.body);
+         const existingData = await Customer.findOne({ CustomerName: newData.CustomerName, IsDelete: 0 });
+                if (existingData) {
+                    return res.status(400).json({ Status:-1, Message: "Customer already exists" });
+                }
+              
         const result= await newData.save();
         res.status(200).json({Status:result._id,Message:"Customer saved"});
     } catch (error) {
@@ -46,6 +51,10 @@ exports.update = async (req, res) => {
     try {
         const { id } = req.params;
         const updatedData = req.body;
+        const existingData = await Customer.findOne({ CustomerName: updatedData.CustomerName, IsDelete: 0,_id:{$ne:id} });
+        if (existingData) {
+            return res.status(400).json({ Status:-1, Message: "Customer already exists" });
+        }
         const result= await Customer.findByIdAndUpdate(id, updatedData, {
             new: true,
             runValidators: true
@@ -53,15 +62,22 @@ exports.update = async (req, res) => {
         if (!result) {
             throw new Error("Customer not found");     
         }
-        res.status(200).json({Status:result._id,Message:"Customer updated"});
+        res.status(200).json({status:result._id,Message:"Customer updated"});
     } catch (error) {
         throw new Error(error.message);
     }
 };
 exports.delete = async (req, res) => {
     try {
-        await Customer.findByIdAndDelete(req.params.id);
-        res.status(200).json({ message: "Customer deleted successfully" });
+        const result = await Customer.findByIdAndUpdate(
+            req.params.id,
+            { IsDelete: 1 },
+            { new: true }
+        );
+        if (!result) {
+            throw new Error("Customer  not found");  
+        }
+        res.status(200).json({status:1, message: "Customer deleted successfully" });
     } catch (error) {
         throw new Error(error.message);
     }
