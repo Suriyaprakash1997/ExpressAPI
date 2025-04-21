@@ -12,10 +12,16 @@ exports.getPagination = async (req, res) => {
         let sortField = SorlCol && ["AccountYear", "_id"].includes(SorlCol) ? SorlCol : "AccountYear";
         let sortOrder = SortOrder && SortOrder.toLowerCase() === "asc" ? 1 : -1;
         const data = await AccountYear.find(query)
+        .select({ AccountYear: 1, StartDate: 1, EndDate: 1,_id: 1 })
         .sort({ [sortField]: sortOrder })
             .skip(skip)
             .limit(limit);
-
+            const formattedData = data.map(item => ({
+                id: item._id,
+                accountyear: item.AccountYear,
+                startdate: formatDate(item.StartDate),
+                enddate: formatDate(item.EndDate),
+            }));
         // Get total count for pagination metadata
         const total = await AccountYear.countDocuments(query);
 
@@ -24,7 +30,7 @@ exports.getPagination = async (req, res) => {
             page,
             limit,
             totalPages: Math.ceil(total / limit),
-            data: data
+            data: formattedData
         });
     } catch (error) {
         throw new Error(error.message);
@@ -94,3 +100,10 @@ exports.get = async (req, res) => {
         throw new Error(error.message);
     }
 };
+function formatDate(date) {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0'); // Month is 0-based
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+}
