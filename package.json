@@ -4,7 +4,8 @@
   "description": "My Express API Project",
   "main": "src/app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "swaggergen": "node src/utilis/swagger-auto-generator.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
@@ -13,6 +14,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.15.0",
     "mongoose": "^8.13.1",
+    "swagger-autogen": "^2.23.7",
+    "swagger-ui-express": "^5.0.1",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
   }

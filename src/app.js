@@ -4,6 +4,8 @@ const cors = require('cors');
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const errorHandler=require('./middleware/errorHandler')
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./docs/swagger-output.json");
 const app = express();
 dotenv.config();
 const accountYearRoute=require('./routes/accountYearRoute')
@@ -42,7 +44,7 @@ app.post("/login", (req, res) => {
 
     res.status(401).json({ message: "Invalid credentials" });
 });
-
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', accountYearRoute);
 app.use('/api', customerRoute);
 app.use('/api',projectRoute);
@@ -52,4 +54,5 @@ app.use(errorHandler);
 const PORT = 8082;
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Swagger API docs available at http://localhost:${PORT}/api-docs`);
 });
