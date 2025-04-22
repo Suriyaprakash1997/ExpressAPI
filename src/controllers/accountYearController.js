@@ -1,7 +1,8 @@
 const AccountYear = require('../models/accountYearModel');
+const CreateAccountYearRequest = require('../DataContract/Request/CreateAccountYearRequest');
 exports.getPagination = async (req, res) => {
     try {
-        let { PageIndex, PageSize, SorlCol,SortOrder,SearchString } = req.query;
+        let { PageIndex, PageSize, SortCol,SortOrder,SearchString } = req.query;
         page = parseInt(PageIndex) || 1;
         limit = parseInt(PageSize) || 10;
         const skip = (page - 1) * limit;
@@ -9,7 +10,7 @@ exports.getPagination = async (req, res) => {
         if (SearchString) {
             query.AccountYear = { $regex: SearchString, $options: 'i' };
         }
-        let sortField = SorlCol && ["AccountYear", "_id"].includes(SorlCol) ? SorlCol : "AccountYear";
+        let sortField = SortCol && ["AccountYear", "_id"].includes(SortCol) ? SortCol : "AccountYear";
         let sortOrder = SortOrder && SortOrder.toLowerCase() === "asc" ? 1 : -1;
         const data = await AccountYear.find(query)
         .select({ AccountYear: 1, StartDate: 1, EndDate: 1,_id: 1 })
@@ -39,10 +40,11 @@ exports.getPagination = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const newData = new AccountYear(req.body);
+        const { accountYear, startDate, endDate } = req.body;
+        const newData = new CreateAccountYearRequest(accountYear, startDate, endDate);
         const existingAccountYear = await AccountYear.findOne({ AccountYear: newData.AccountYear, IsDelete: 0 });
         if (existingAccountYear) {
-            return res.status(400).json({ status:-1, Message: "Account year already exists" });
+            return res.status(200).json({ status:-1, message: "Account year already exists" });
         }
       
         if (newData.StartDate) {
@@ -51,8 +53,14 @@ exports.create = async (req, res) => {
         if (newData.EndDate) {
             newData.EndDate = new Date(new Date(newData.EndDate).setUTCHours(0, 0, 0, 0));
         }
-        const result= await newData.save();
-        res.status(200).json({scrolltatus:result._id,Message:"Account year saved"});
+        const saveData = new AccountYear(newData);
+        const result= await saveData.save();
+        if(result){
+            res.status(200).json({status:1,message:"Account year saved"});
+        }
+       else{
+            res.status(400).json({status:-1,message:"Account year not saved"});
+        }   
     } catch (error) {
         throw new Error(error.message);
     }
