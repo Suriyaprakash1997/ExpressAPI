@@ -1,0 +1,1 @@
+{"level":"error","message":"CustomerListResponse.fromEntity is not a constructor","method":"GET","timestamp":"2025-04-23T11:10:45.744Z","url":"/api/customer"}

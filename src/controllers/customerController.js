@@ -1,22 +1,26 @@
 const Customer=require('../models/customerModel')
+const CreateCustomerRequest = require('../DataContract/Request/CreateCustomerRequest');
+const CustomerListResponse = require('../DataContract/response/CustomerListResponse');
 exports.getPagination = async (req, res) => {
     try {
-        let { PageIndex, PageSize, SorlCol,SortOrder,SearchString } = req.query;
+        let { PageIndex, PageSize, SortCol,SortOrder,SearchString } = req.query;
         page = parseInt(PageIndex) || 1;
         limit = parseInt(PageSize) || 10;
         const skip = (page - 1) * limit;
         let query = {IsDelete:{$ne:1}};
         if (SearchString) {
-            query.CompanyName = { $regex: SearchString, $options: 'i' }; 
-            query.CustomerName = { $regex: SearchString, $options: 'i' };
+            query.$or = [
+                { CompanyName: { $regex: SearchString, $options: 'i' } },
+                { CustomerName: { $regex: SearchString, $options: 'i' } }
+            ];
         }
-        let sortField = SorlCol && ["CustomerName", "CompanyName"].includes(SorlCol) ? SorlCol : "CustomerName";
+        let sortField = SortCol && ["CustomerName", "CompanyName"].includes(SortCol) ? SortCol : "CustomerName";
         let sortOrder = SortOrder && SortOrder.toLowerCase() === "asc" ? 1 : -1;
         const data = await Customer.find(query)
         .sort({ [sortField]: sortOrder })
             .skip(skip)
             .limit(limit);
-
+       const formattedData = data.map(item => CustomerListResponse.fromEntity(item));
         // Get total count for pagination metadata
         const total = await Customer.countDocuments(query);
 
@@ -25,7 +29,7 @@ exports.getPagination = async (req, res) => {
             page,
             limit,
             totalPages: Math.ceil(total / limit),
-            data: data
+            data: formattedData
         });
     } catch (error) {
         throw new Error(error.message);
@@ -34,14 +38,28 @@ exports.getPagination = async (req, res) => {
 
 exports.create = async (req, res) => {
     try {
-        const newData = new Customer(req.body);
-         const existingData = await Customer.findOne({ CustomerName: newData.CustomerName, IsDelete: 0 });
+        const { customerName, companyName,address,
+            phone, email, mobile, web, skype, elance,
+             freelancer, upwork, currency, currencyCode, status,
+              gST, gSTNumber,countryCode, attentionPerson, attentionDesignation } = req.body;
+        const newData = new CreateCustomerRequest(customerName, companyName,address,
+            phone, email, mobile, web, skype, elance,
+             freelancer, upwork, currency, currencyCode, status,
+              gST, gSTNumber,countryCode, attentionPerson, attentionDesignation);
+        const saveData = new Customer(newData);
+         const existingData = await Customer.findOne({ CustomerName: newData.customerName, IsDelete: 0 });
                 if (existingData) {
                     return res.status(400).json({ Status:-1, Message: "Customer already exists" });
                 }
               
-        const result= await newData.save();
-        res.status(200).json({Status:result._id,Message:"Customer saved"});
+        const result= await saveData.save();
+        if(result){
+            res.status(200).json({status:1,message:"Customer saved"});
+        }
+        else{
+            res.status(400).json({status:-1,message:"Customer not saved"});
+        }
+       
     } catch (error) {
         throw new Error(error.message);
     }
@@ -50,7 +68,15 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedData = req.body;
+        const { customerName, companyName,address,
+            phone, email, mobile, web, skype, elance,
+             freelancer, upwork, currency, currencyCode, status,
+              gST, gSTNumber,countryCode, attentionPerson, attentionDesignation } = req.body;
+              const newData = new CreateCustomerRequest(customerName, companyName,address,
+                phone, email, mobile, web, skype, elance,
+                 freelancer, upwork, currency, currencyCode, status,
+                  gST, gSTNumber,countryCode, attentionPerson, attentionDesignation);
+        const updatedData = new Customer(newData);
         const existingData = await Customer.findOne({ CustomerName: updatedData.CustomerName, IsDelete: 0,_id:{$ne:id} });
         if (existingData) {
             return res.status(400).json({ Status:-1, Message: "Customer already exists" });
@@ -60,9 +86,9 @@ exports.update = async (req, res) => {
             runValidators: true
         });
         if (!result) {
-            throw new Error("Customer not found");     
+            res.status(400).json({status:-1,message:"Customer not found"});   
         }
-        res.status(200).json({status:result._id,Message:"Customer updated"});
+        res.status(200).json({status:1,Message:"Customer updated"});
     } catch (error) {
         throw new Error(error.message);
     }

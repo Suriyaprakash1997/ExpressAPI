@@ -59,7 +59,7 @@
             "type": "string"
           },
           {
-            "name": "SorlCol",
+            "name": "SortCol",
             "in": "query",
             "type": "string"
           },
@@ -85,6 +85,26 @@
           "AccountYear"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "accountYear": {
+                  "example": "any"
+                },
+                "startDate": {
+                  "example": "any"
+                },
+                "endDate": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -175,7 +195,7 @@
             "type": "string"
           },
           {
-            "name": "SorlCol",
+            "name": "SortCol",
             "in": "query",
             "type": "string"
           },
@@ -201,6 +221,74 @@
           "Customer"
         ],
         "description": "",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "customerName": {
+                  "example": "any"
+                },
+                "companyName": {
+                  "example": "any"
+                },
+                "address": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "mobile": {
+                  "example": "any"
+                },
+                "web": {
+                  "example": "any"
+                },
+                "skype": {
+                  "example": "any"
+                },
+                "elance": {
+                  "example": "any"
+                },
+                "freelancer": {
+                  "example": "any"
+                },
+                "upwork": {
+                  "example": "any"
+                },
+                "currency": {
+                  "example": "any"
+                },
+                "currencyCode": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                },
+                "gST": {
+                  "example": "any"
+                },
+                "gSTNumber": {
+                  "example": "any"
+                },
+                "countryCode": {
+                  "example": "any"
+                },
+                "attentionPerson": {
+                  "example": "any"
+                },
+                "attentionDesignation": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "OK"
@@ -261,6 +349,72 @@
             "in": "path",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "customerName": {
+                  "example": "any"
+                },
+                "companyName": {
+                  "example": "any"
+                },
+                "address": {
+                  "example": "any"
+                },
+                "phone": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "mobile": {
+                  "example": "any"
+                },
+                "web": {
+                  "example": "any"
+                },
+                "skype": {
+                  "example": "any"
+                },
+                "elance": {
+                  "example": "any"
+                },
+                "freelancer": {
+                  "example": "any"
+                },
+                "upwork": {
+                  "example": "any"
+                },
+                "currency": {
+                  "example": "any"
+                },
+                "currencyCode": {
+                  "example": "any"
+                },
+                "status": {
+                  "example": "any"
+                },
+                "gST": {
+                  "example": "any"
+                },
+                "gSTNumber": {
+                  "example": "any"
+                },
+                "countryCode": {
+                  "example": "any"
+                },
+                "attentionPerson": {
+                  "example": "any"
+                },
+                "attentionDesignation": {
+                  "example": "any"
+                }
+              }
+            }
           }
         ],
         "responses": {
