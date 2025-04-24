@@ -246,21 +246,6 @@
                 "mobile": {
                   "example": "any"
                 },
-                "web": {
-                  "example": "any"
-                },
-                "skype": {
-                  "example": "any"
-                },
-                "elance": {
-                  "example": "any"
-                },
-                "freelancer": {
-                  "example": "any"
-                },
-                "upwork": {
-                  "example": "any"
-                },
                 "currency": {
                   "example": "any"
                 },
@@ -277,12 +262,6 @@
                   "example": "any"
                 },
                 "countryCode": {
-                  "example": "any"
-                },
-                "attentionPerson": {
-                  "example": "any"
-                },
-                "attentionDesignation": {
                   "example": "any"
                 }
               }
@@ -374,21 +353,6 @@
                 "mobile": {
                   "example": "any"
                 },
-                "web": {
-                  "example": "any"
-                },
-                "skype": {
-                  "example": "any"
-                },
-                "elance": {
-                  "example": "any"
-                },
-                "freelancer": {
-                  "example": "any"
-                },
-                "upwork": {
-                  "example": "any"
-                },
                 "currency": {
                   "example": "any"
                 },
@@ -405,12 +369,6 @@
                   "example": "any"
                 },
                 "countryCode": {
-                  "example": "any"
-                },
-                "attentionPerson": {
-                  "example": "any"
-                },
-                "attentionDesignation": {
                   "example": "any"
                 }
               }

@@ -2,19 +2,19 @@
 const express = require('express');
 const router = express.Router();
 const customerController=require('../controllers/customerController')
-router.get('/customer',
+router.get('/',
      // #swagger.tags = ['Customer']
     customerController.getPagination);
-router.post('/customer',
+router.post('/',
      // #swagger.tags = ['Customer']
     customerController.create);
-router.delete('/customer/:id',
+router.delete('/:id',
      // #swagger.tags = ['Customer']
     customerController.delete);
-router.get('/customer/:id',
+router.get('/:id',
      // #swagger.tags = ['Customer']
     customerController.get);
-router.put('/customer/:id',
+router.put('/:id',
      // #swagger.tags = ['Customer']
     customerController.update);
 module.exports = router;

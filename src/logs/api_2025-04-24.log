@@ -1,0 +1,2 @@
+{"level":"error","message":"Plan executor error during findAndModify :: caused by :: Performing an update on the path '_id' would modify the immutable field '_id'","method":"PUT","timestamp":"2025-04-24T10:07:26.031Z","url":"/api/customer/6809d3f4fe4a9a64c029e5db"}
+{"level":"error","message":"Plan executor error during findAndModify :: caused by :: Performing an update on the path '_id' would modify the immutable field '_id'","method":"PUT","timestamp":"2025-04-24T10:09:01.967Z","url":"/api/customer/680a0da3014c0f49f8623c0a"}

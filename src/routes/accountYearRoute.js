@@ -2,19 +2,19 @@
 const express = require('express');
 const router = express.Router();
 const accountYearController=require('../controllers/AccountYearController')
-router.get('/accountYear',
+router.get('/',
         // #swagger.tags = ['AccountYear']
     accountYearController.getPagination);
-router.post('/accountYear',
+router.post('/',
       // #swagger.tags = ['AccountYear']
     accountYearController.create);
-router.delete('/accountYear/:id',
+router.delete('/:id',
       // #swagger.tags = ['AccountYear']
     accountYearController.delete);
-router.get('/accountYear/:id',
+router.get('/:id',
       // #swagger.tags = ['AccountYear']
     accountYearController.get);
-router.put('/accountYear/:id',
+router.put('/:id',
       // #swagger.tags = ['AccountYear']
     accountYearController.update);
 module.exports = router;

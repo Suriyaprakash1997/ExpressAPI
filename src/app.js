@@ -16,10 +16,6 @@ const SECRET_KEY = process.env.JWT_SECRET || "mysecretkey";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    next();
-});
 mongoose.connect('mongodb://127.0.0.1:27017/MehaInvoice')
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => console.error('MongoDB Connection Error:', err));
@@ -45,10 +41,10 @@ app.post("/login", (req, res) => {
     res.status(401).json({ message: "Invalid credentials" });
 });
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-app.use('/api', accountYearRoute);
-app.use('/api', customerRoute);
+app.use('/api/accountYear', accountYearRoute);
+app.use('/api/customer', customerRoute);
 app.use('/api',projectRoute);
-app.use('/api',dropdownRoute);
+app.use('/api/dropdown',dropdownRoute);
 
 app.use(errorHandler);
 const PORT = 8082;

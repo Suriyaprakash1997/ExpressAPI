@@ -1,6 +1,8 @@
 const Customer=require('../models/customerModel')
 const CreateCustomerRequest = require('../DataContract/Request/CreateCustomerRequest');
 const CustomerListResponse = require('../DataContract/response/CustomerListResponse');
+const CustomerResponse = require('../DataContract/response/CustomerResponse');
+const {customerSchema} = require('../validation/customervalidator')
 exports.getPagination = async (req, res) => {
     try {
         let { PageIndex, PageSize, SortCol,SortOrder,SearchString } = req.query;
@@ -39,13 +41,19 @@ exports.getPagination = async (req, res) => {
 exports.create = async (req, res) => {
     try {
         const { customerName, companyName,address,
-            phone, email, mobile, web, skype, elance,
-             freelancer, upwork, currency, currencyCode, status,
-              gST, gSTNumber,countryCode, attentionPerson, attentionDesignation } = req.body;
+            phone, email, mobile, currency, currencyCode, status,
+              gST, gSTNumber,countryCode } = req.body;
         const newData = new CreateCustomerRequest(customerName, companyName,address,
-            phone, email, mobile, web, skype, elance,
-             freelancer, upwork, currency, currencyCode, status,
-              gST, gSTNumber,countryCode, attentionPerson, attentionDesignation);
+            phone, email, mobile, currency, currencyCode, status,
+              gST, gSTNumber,countryCode);
+              const parseResult = customerSchema.safeParse(newData);
+              if (!parseResult.success) {
+                return res.status(400).json({
+                    status: -1,
+                    message: "Validation failed",
+                    errors: parseResult.error.flatten()
+                });
+            }
         const saveData = new Customer(newData);
          const existingData = await Customer.findOne({ CustomerName: newData.customerName, IsDelete: 0 });
                 if (existingData) {
@@ -69,19 +77,24 @@ exports.update = async (req, res) => {
     try {
         const { id } = req.params;
         const { customerName, companyName,address,
-            phone, email, mobile, web, skype, elance,
-             freelancer, upwork, currency, currencyCode, status,
-              gST, gSTNumber,countryCode, attentionPerson, attentionDesignation } = req.body;
+            phone, email, mobile,currency, currencyCode, status,
+              gST, gSTNumber,countryCode} = req.body;
               const newData = new CreateCustomerRequest(customerName, companyName,address,
-                phone, email, mobile, web, skype, elance,
-                 freelancer, upwork, currency, currencyCode, status,
-                  gST, gSTNumber,countryCode, attentionPerson, attentionDesignation);
-        const updatedData = new Customer(newData);
-        const existingData = await Customer.findOne({ CustomerName: updatedData.CustomerName, IsDelete: 0,_id:{$ne:id} });
+                phone, email, mobile,  currency, currencyCode, status,
+                  gST, gSTNumber,countryCode);
+                  const parseResult = customerSchema.safeParse(newData);
+                  if (!parseResult.success) {
+                    return res.status(400).json({
+                        status: -1,
+                        message: "Validation failed",
+                        errors: parseResult.error.flatten()
+                    });
+                }
+        const existingData = await Customer.findOne({ CustomerName: newData.CustomerName, IsDelete: 0,_id:{$ne:id} });
         if (existingData) {
             return res.status(400).json({ Status:-1, Message: "Customer already exists" });
         }
-        const result= await Customer.findByIdAndUpdate(id, updatedData, {
+        const result= await Customer.findByIdAndUpdate(id, newData, {
             new: true,
             runValidators: true
         });
@@ -111,7 +124,11 @@ exports.delete = async (req, res) => {
 exports.get = async (req, res) => {
     try {
         const result= await Customer.findById(req.params.id);
-        res.status(200).json(result);
+        if (!result) {
+            res.status(400).json({status:-1,message:"Customer not found"});   
+        }
+        const formattedData = CustomerResponse.fromEntity(result);
+        res.status(200).json(formattedData);
     } catch (error) {
         throw new Error(error.message);
     }
