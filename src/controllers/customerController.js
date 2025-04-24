@@ -92,7 +92,7 @@ exports.update = async (req, res) => {
                 }
         const existingData = await Customer.findOne({ CustomerName: newData.CustomerName, IsDelete: 0,_id:{$ne:id} });
         if (existingData) {
-            return res.status(400).json({ Status:-1, Message: "Customer already exists" });
+            return res.status(400).json({ status:-1, message: "Customer already exists" });
         }
         const result= await Customer.findByIdAndUpdate(id, newData, {
             new: true,
@@ -101,7 +101,7 @@ exports.update = async (req, res) => {
         if (!result) {
             res.status(400).json({status:-1,message:"Customer not found"});   
         }
-        res.status(200).json({status:1,Message:"Customer updated"});
+        res.status(200).json({status:1,message:"Customer updated"});
     } catch (error) {
         throw new Error(error.message);
     }
