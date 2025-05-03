@@ -1,8 +1,9 @@
-const Customer=require('../models/customerModel')
+const Customer = require('../models/customerModel')
 const CreateCustomerRequest = require('../DataContract/Request/CreateCustomerRequest');
 const CustomerListResponse = require('../DataContract/response/CustomerListResponse');
 const CustomerResponse = require('../DataContract/response/CustomerResponse');
 const {customerSchema} = require('../validation/customervalidator')
+
 exports.getPagination = async (req, res) => {
     try {
         let { PageIndex, PageSize, SortCol,SortOrder,SearchString } = req.query;
@@ -10,6 +11,7 @@ exports.getPagination = async (req, res) => {
         limit = parseInt(PageSize) || 10;
         const skip = (page - 1) * limit;
         let query = {IsDelete:{$ne:1}};
+
         if (SearchString) {
             query.$or = [
                 { CompanyName: { $regex: SearchString, $options: 'i' } },
@@ -23,8 +25,7 @@ exports.getPagination = async (req, res) => {
             .skip(skip)
             .limit(limit);
        const formattedData = data.map(item => CustomerListResponse.fromEntity(item));
-        // Get total count for pagination metadata
-        const total = await Customer.countDocuments(query);
+       const total = await Customer.countDocuments(query);
 
         res.json({
             total,
@@ -33,7 +34,8 @@ exports.getPagination = async (req, res) => {
             totalPages: Math.ceil(total / limit),
             data: formattedData
         });
-    } catch (error) {
+    }
+     catch (error) {
         throw new Error(error.message);
     }
 };
@@ -47,6 +49,7 @@ exports.create = async (req, res) => {
             phone, email, mobile, currency, currencyCode, status,
               gST, gSTNumber,countryCode);
               const parseResult = customerSchema.safeParse(newData);
+
               if (!parseResult.success) {
                 return res.status(400).json({
                     status: -1,
@@ -54,13 +57,16 @@ exports.create = async (req, res) => {
                     errors: parseResult.error.flatten()
                 });
             }
+
         const saveData = new Customer(newData);
          const existingData = await Customer.findOne({ CustomerName: newData.customerName, IsDelete: 0 });
-                if (existingData) {
+               
+         if (existingData) {
                     return res.status(400).json({ Status:-1, Message: "Customer already exists" });
                 }
               
         const result= await saveData.save();
+
         if(result){
             res.status(200).json({status:1,message:"Customer saved"});
         }
@@ -68,7 +74,8 @@ exports.create = async (req, res) => {
             res.status(400).json({status:-1,message:"Customer not saved"});
         }
        
-    } catch (error) {
+    } 
+    catch (error) {
         throw new Error(error.message);
     }
 };
@@ -91,21 +98,27 @@ exports.update = async (req, res) => {
                     });
                 }
         const existingData = await Customer.findOne({ CustomerName: newData.CustomerName, IsDelete: 0,_id:{$ne:id} });
+        
         if (existingData) {
             return res.status(400).json({ status:-1, message: "Customer already exists" });
         }
+        
         const result= await Customer.findByIdAndUpdate(id, newData, {
             new: true,
             runValidators: true
         });
+       
         if (!result) {
             res.status(400).json({status:-1,message:"Customer not found"});   
         }
+        
         res.status(200).json({status:1,message:"Customer updated"});
-    } catch (error) {
+    } 
+    catch (error) {
         throw new Error(error.message);
     }
 };
+
 exports.delete = async (req, res) => {
     try {
         const result = await Customer.findByIdAndUpdate(
@@ -113,23 +126,30 @@ exports.delete = async (req, res) => {
             { IsDelete: 1 },
             { new: true }
         );
+
         if (!result) {
             throw new Error("Customer  not found");  
         }
+
         res.status(200).json({status:1, message: "Customer deleted successfully" });
-    } catch (error) {
+    } 
+    catch (error) {
         throw new Error(error.message);
     }
 };
+
 exports.get = async (req, res) => {
     try {
         const result= await Customer.findById(req.params.id);
+
         if (!result) {
             res.status(400).json({status:-1,message:"Customer not found"});   
         }
+
         const formattedData = CustomerResponse.fromEntity(result);
         res.status(200).json(formattedData);
-    } catch (error) {
+    }
+     catch (error) {
         throw new Error(error.message);
     }
 };
