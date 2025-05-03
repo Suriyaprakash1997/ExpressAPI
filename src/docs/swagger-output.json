@@ -2,7 +2,7 @@
   "swagger": "2.0",
   "info": {
     "title": "Invoice API",
-    "description": "API for managing user data",
+    "description": "API for managing invoice details",
     "version": "1.0.0"
   },
   "host": "localhost:8082",
@@ -41,7 +41,7 @@
         }
       }
     },
-    "/api/accountYear": {
+    "/api/accountYear/": {
       "get": {
         "tags": [
           "AccountYear"
@@ -177,7 +177,7 @@
         }
       }
     },
-    "/api/customer": {
+    "/api/customer/": {
       "get": {
         "tags": [
           "Customer"
@@ -314,6 +314,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       },
@@ -501,7 +504,7 @@
         }
       }
     },
-    "/api/dropdown": {
+    "/api/dropdown/": {
       "get": {
         "tags": [
           "Dropdown"
@@ -525,6 +528,52 @@
           },
           "404": {
             "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/common/invoice": {
+      "get": {
+        "tags": [
+          "Common"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/common/customer/{id}": {
+      "get": {
+        "tags": [
+          "Common"
+        ],
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }

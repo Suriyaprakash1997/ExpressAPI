@@ -3,15 +3,16 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-const errorHandler=require('./middleware/errorHandler')
+const errorHandler = require('./middleware/errorHandler')
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocument = require("./docs/swagger-output.json");
 const app = express();
 dotenv.config();
-const accountYearRoute=require('./routes/accountYearRoute')
-const customerRoute=require('./routes/customerRoute')
-const projectRoute=require('./routes/projectRoute')
-const dropdownRoute=require('./routes/dropdownRoute')
+const accountYearRoute = require('./routes/accountYearRoute')
+const customerRoute = require('./routes/customerRoute')
+const projectRoute = require('./routes/projectRoute')
+const dropdownRoute = require('./routes/dropdownRoute')
+const commonRoute = require('./routes/commonRoute')
 const SECRET_KEY = process.env.JWT_SECRET || "mysecretkey";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -45,6 +46,7 @@ app.use('/api/accountYear', accountYearRoute);
 app.use('/api/customer', customerRoute);
 app.use('/api',projectRoute);
 app.use('/api/dropdown',dropdownRoute);
+app.use('/api/common',commonRoute);
 
 app.use(errorHandler);
 const PORT = 8082;
