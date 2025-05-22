@@ -577,6 +577,38 @@
           }
         }
       }
+    },
+    "/api/employee/upload": {
+      "post": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/api/employee/downloadtemplate": {
+      "get": {
+        "tags": [
+          "Employee"
+        ],
+        "description": "",
+        "responses": {
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   }
 }

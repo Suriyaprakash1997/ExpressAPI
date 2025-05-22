@@ -13,6 +13,7 @@ const customerRoute = require('./routes/customerRoute')
 const projectRoute = require('./routes/projectRoute')
 const dropdownRoute = require('./routes/dropdownRoute')
 const commonRoute = require('./routes/commonRoute')
+const employeeRoute = require('./routes/employeeRoute')
 const SECRET_KEY = process.env.JWT_SECRET || "mysecretkey";
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -47,6 +48,7 @@ app.use('/api/customer', customerRoute);
 app.use('/api',projectRoute);
 app.use('/api/dropdown',dropdownRoute);
 app.use('/api/common',commonRoute);
+app.use('/api/employee',employeeRoute);
 
 app.use(errorHandler);
 const PORT = 8082;
