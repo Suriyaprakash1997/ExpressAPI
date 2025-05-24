@@ -1,6 +1,7 @@
 const XLSX = require("xlsx");
 const path = require("path");
 const CustomerResponse = require('../DataContract/response/CustomerResponse');
+const Employee = require("../models/employeeModel");
 
 exports.uploadFile = async (req, res) => {
 
@@ -9,14 +10,13 @@ exports.uploadFile = async (req, res) => {
     }
 
     try {
-    // const filePath = path.join(__dirname,"..","..", "uploads", req.file.filename);
-    // const workbook = XLSX.readFile(filePath);
-     const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+    const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
     const sheetName = workbook.SheetNames[0];
     const sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName]);
     const formattedData = sheetData.map((row) => {
       // Convert Excel date serial to JS Date if dateOfJoin is a number
-      let formattedDate = row["DateOfJoin"];
+      let formattedDate = row["DateOfBirth"];
+      let formattedDateofJoin = row["DateOfJoin"];
       if (typeof formattedDate === "number") {
         const jsDate = XLSX.SSF.parse_date_code(formattedDate);
         if (jsDate) {
@@ -24,25 +24,36 @@ exports.uploadFile = async (req, res) => {
           const day = String(jsDate.d).padStart(2, '0');
           const month = String(jsDate.m).padStart(2, '0');
           const year = jsDate.y;
-          formattedDate = `${day}-${month}-${year}`;
+          formattedDate = `${year}-${month}-${day}`;
+        }
+      }
+       if (typeof formattedDateofJoin === "number") {
+        const jsDate = XLSX.SSF.parse_date_code(formattedDateofJoin);
+        if (jsDate) {
+          // Pad day and month with leading zeros
+          const day = String(jsDate.d).padStart(2, '0');
+          const month = String(jsDate.m).padStart(2, '0');
+          const year = jsDate.y;
+          formattedDateofJoin = `${year}-${month}-${day}`;
         }
       }
       return {
-        name: row["Name"],
-        age: row["Age"],
-        email: row["Email"],
-        dateOfJoin: formattedDate
+        EmployeeCode: row["EmployeeCode"],
+        EmployeeName: row["EmployeeName"],
+        EmailID: row["EmailID"],
+        DateOfBirth: new Date(formattedDate),
+        DateOfJoin:new Date(formattedDateofJoin) ,
+        Salary: row["Salary"],
       };
     });
-
-    // Output the formatted data (For now, just to check the structure)
-    console.log("Formatted Data:", formattedData);
-
-    // TODO: Insert data into the database (MongoDB, PostgreSQL, etc.)
+const result= await Employee.insertMany(formattedData);
+    if (!result) {
+      return res.status(400).json({ success: false, message: "Error inserting data into the database" });
+    }
 
     res.status(200).json({
-      message: "File processed successfully",
-      data: formattedData,
+      success: true,
+      message: "Employee data uploaded successfully",
     });
 
   } catch (error) {
